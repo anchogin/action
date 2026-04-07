@@ -44,7 +44,7 @@ ENV MISE_DATA_DIR=/root/.local/share/mise \
 
 ENV PATH="/root/.local/bin:/root/.cargo/bin:/root/.local/share/mise/shims:/root/.local/share/mise/bin:${PATH}"
 
-COPY ./docker/opencode-entrypoint.sh /usr/local/bin/opencode-entrypoint.sh
+COPY ./docker/opencode/opencode-entrypoint.sh /usr/local/bin/opencode-entrypoint.sh
 RUN chmod +x /usr/local/bin/opencode-entrypoint.sh
 
 EXPOSE 4096
