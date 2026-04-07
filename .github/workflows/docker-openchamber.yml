@@ -1,6 +1,9 @@
 name: Build & Push openchamber Docker Image
 
 on:
+  schedule:
+    # 每周日0点（UTC时间）自动重建，跟进最新版本
+    - cron: '0 0 * * 0'
   workflow_dispatch:          # 手动触发，可按需添加其他触发条件（如 schedule）
   # push:                     # 若需要自动触发，可取消注释并指定分支
   #   branches: [main]
