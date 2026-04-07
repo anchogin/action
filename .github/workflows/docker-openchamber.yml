@@ -22,7 +22,7 @@ jobs:
         with:
           repository: openchamber/openchamber   # 目标仓库
           # 如果目标仓库是私有的，需要提供 token
-          token: ${{ secrets.PAT_OPENCHAMBER }} # 在 GitHub Secrets 中配置 PAT
+          # token: ${{ secrets.PAT_OPENCHAMBER }} # 在 GitHub Secrets 中配置 PAT
           path: openchamber                    # 可选：指定检出目录，默认为当前目录
 
       - name: Set up QEMU
