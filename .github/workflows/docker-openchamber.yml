@@ -1,0 +1,61 @@
+name: Build & Push openchamber Docker Image
+
+on:
+  workflow_dispatch:          # 手动触发，可按需添加其他触发条件（如 schedule）
+  # push:                     # 若需要自动触发，可取消注释并指定分支
+  #   branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/openchamber   # 推送到你的 GHCR 命名空间下
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout target repository (openchamber/openchamber)
+        uses: actions/checkout@v4
+        with:
+          repository: openchamber/openchamber   # 目标仓库
+          # 如果目标仓库是私有的，需要提供 token
+          token: ${{ secrets.PAT_OPENCHAMBER }} # 在 GitHub Secrets 中配置 PAT
+          path: openchamber                    # 可选：指定检出目录，默认为当前目录
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=
+            type=ref,event=branch
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./openchamber                # 使用检出目录作为构建上下文
+          file: ./openchamber/Dockerfile        # Dockerfile 路径（若文件名不同请调整）
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
