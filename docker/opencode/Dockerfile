@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     xz-utils \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # 安装 mise（用于持久化管理 Node/Python 等运行时）
