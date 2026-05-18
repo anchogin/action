@@ -50,6 +50,10 @@ jobs:
             type=raw,value=latest
             type=sha,prefix=
             type=ref,event=branch
+  
+      - name: 修改rust版本
+        run: |
+          sed -i "s/rust:1.85/rust:1.93/g" ./pebble/Dockerfile
 
       - name: Build and push
         uses: docker/build-push-action@v6
